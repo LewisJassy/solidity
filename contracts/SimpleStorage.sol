@@ -26,4 +26,49 @@ contract SimpleStorage {
     // payable - this func can receive ether,
     // non-payable - this func cannot receive ether.
 }
+//example
+
+contract Bank {
+    address public owner;
+    mapping(address => uint256) public balances;
+
+    //this runs only when the code is deployed, and sets the owner to the address that deployed the contract
+    constructor() {
+        owner = msg.sender;
+    }
+
+    //reussable function wrapper
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    function deposit() public payable {
+        require(msg.value > 0, "Send some ETH");
+        balances[msg.sender] += msg.value;
+    }
+
+    function getBalance() public view returns (uint256) {
+        return balances[msg.sender];
+    }
+
+    function toWei(uint256 ethAmount) public pure returns (uint256) {
+        return ethAmount * 1e18;
+    }
+
+    function withdraw(uint256 amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
+    }
+
+    function emergencyDrain() public onlyOwner {
+        payable(owner).transfer(address(this).balance);
+    }
+
+    // handles plain eth sending to the contract without calling any function
+    receive() external payable {
+        balances[msg.sender] += msg.value;
+    }
+}
 
