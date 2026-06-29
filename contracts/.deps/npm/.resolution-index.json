@@ -1,0 +1,10 @@
+{
+  "SimpleStorage.sol": {
+    "__sources__": {
+      "SimpleStorage.sol": {
+        "content": "pragma solidity ^0.8.18   // we will work with solidity with version  either 0.8.18 or higher\r\n",
+        "file": "SimpleStorage.sol"
+      }
+    }
+  }
+}
