@@ -4,10 +4,24 @@ pragma solidity ^0.8.18; // we will work with solidity with version  either 0.8.
 contract SimpleStorage {
     // basic var types: boolean, uint, bytes, int, address etc
     bool hasFavoriteNumber = true;
-    uint256 public favouriteNumber = 1; // can be accessed externally and internal
+    uint256 favouriteNumber = 1; // can be accessed externally and internal when we add "public" keyword
     int32 favouriteInt = 30;
     string favouriteString = "hi lewis";
     address myAddress = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
+
+    // arrays and structs
+    struct Person {
+        uint256 favouriteNumber;
+        string name;
+    }
+
+    // Person public pat = Person(10, "Lewis");
+    //to be more explicit we can also write it as:
+    Person public pat = Person({favouriteNumber: 10, name: "Lewis"});
+
+    // incase we hav a list ,we can use array:
+    // this is a dynamic array
+    Person[] public listOfPeople;
 
     // funtions
     function store(uint256 _favouriteNumber) public {
@@ -59,16 +73,31 @@ contract Bank {
     function withdraw(uint256 amount) public {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         balances[msg.sender] -= amount;
-        payable(msg.sender).transfer(amount);
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        require(success, "Transfer failed");
     }
 
     function emergencyDrain() public onlyOwner {
-        payable(owner).transfer(address(this).balance);
+        uint256 balance = address(this).balance;
+        (bool success,) = payable(owner).call{value: balance}("");
+        require(success, "Transfer failed");
     }
 
     // handles plain eth sending to the contract without calling any function
     receive() external payable {
         balances[msg.sender] += msg.value;
+    }
+}
+
+contract StructArray {
+    uint256[] public StudentList;
+
+    function addStudent(uint256 _studentId) public {
+        StudentList.push(_studentId);
+    }
+
+    function getList(uint256 _index) public view returns (uint256) {
+        return StudentList[_index];
     }
 }
 

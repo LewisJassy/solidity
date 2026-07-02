@@ -2,7 +2,7 @@
 pragma solidity ^0.8.35;
 
 import {Script} from "forge-std/Script.sol";
-import {SimpleStorage, Bank} from "../contracts/SimpleStorage.sol";
+import {SimpleStorage, Bank, StructArray} from "../contracts/SimpleStorage.sol";
 
 contract DeploySimpleStorgae is Script {
     function run() external {
@@ -10,6 +10,7 @@ contract DeploySimpleStorgae is Script {
 
         new SimpleStorage();
         new Bank();
+        new StructArray();
         vm.stopBroadcast();
     }
 }
